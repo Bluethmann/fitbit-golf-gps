@@ -1,0 +1,20 @@
+<svg class="background">
+  <text id="clubtext" x="50%" y="88%"></text>
+  <text id="holetext" x="50%" y="60%">Course</text>
+  <text id="middisttext" x="50%" y="42%"></text>
+  <text id="frontdisttext" x="5%" y="40%"></text>
+  <text id="backdisttext" x="95%" y="40%"></text>
+  <text id="timetext" x="7%" y="20%"></text>
+
+  <text id="courseanimationtext" x="50%" y="42%" pointer-events="visible">Test
+     <animate attributeName="x"  begin="load;enable" from="50%" to="-200%" dur="6" />
+  </text>
+  
+  <use id="hole-up" href="#icon-button" class="medium-button application-fill plus-button" />
+  <use id="hole-down" href="#icon-button" class="medium-button application-fill minus-button" />
+  <use id="club-up" href="#icon-button" class="medium-button application-fill plus-button" />
+  <use id="club-down" href="#icon-button" class="medium-button application-fill minus-button" />
+  <use id="check" href="#icon-button" class="medium-button application-fill check-button" />
+  
+</svg>
+

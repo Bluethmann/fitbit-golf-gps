@@ -1,0 +1,24 @@
+{
+  "devDependencies": {
+    "@fitbit/sdk": "~6.0.0"
+  },
+  "fitbit": {
+    "appUUID": "b1715e8e-4293-41ec-8960-2a0566fa6164",
+    "appType": "app",
+    "appDisplayName": "BBBlue GPS",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "#8bc34a",
+    "requestedPermissions": [
+      "access_location"
+    ],
+    "buildTargets": [
+      "vulcan"
+    ],
+    "i18n": {
+      "en-US": {
+        "name": "BBBlue GPS"
+      }
+    },
+    "defaultLanguage": "en-US"
+  }
+}
