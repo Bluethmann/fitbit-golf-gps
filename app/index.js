@@ -3,6 +3,7 @@
  */
 import * as document from "document";
 import clock from "clock";
+import { me as appbit } from "appbit";
 
 import * as course from "../golf/courses.js";
 import * as gps from "../golf/gps.js";
@@ -26,6 +27,8 @@ const checkBtn = document.getElementById("check");
 
 let initialized = false;
 
+appbit.appTimeoutEnabled = true;  // exit after a while if a round isn't started
+
 
 function scrollTime()
 {
@@ -43,7 +46,7 @@ function scrollTime()
         courseanimationtext.animate("disable"); // Specify the name of the event to trigger
             
       }
-      console.log("intialized = " + initialized);
+      //console.log("intialized = " + initialized);
   }, 6000);
   
   }
@@ -54,7 +57,7 @@ scrollTime();
 
 // Button event handles -- move to another file???
 holeUpBtn.addEventListener("click", (evt) => {
-  console.log("next hole");
+//  console.log("next hole");
   
   // when not initialized next course
   if(initialized == false)
@@ -70,7 +73,7 @@ holeUpBtn.addEventListener("click", (evt) => {
 })
 
 holeDnBtn.addEventListener("click", (evt) => {
-  console.log("prev hole");
+//  console.log("prev hole");
   // when not initialized next course
   if(initialized == false)
   {
@@ -103,10 +106,14 @@ checkBtn.addEventListener("click", (evt) => {
   {
     initialized = true;
     courseanimationtext.text="";
-  
+    appbit.appTimeoutEnabled = false;  // don't exit after inactivity
+
     holetext.text = "Hole " + (course.getHoleNum() + 1);  // holes are zero based, add one for display
     clubtext.text = "Driver";
-    middisttext.text = "";
+	
+	// write acquiring GPS in small font, so it displays
+    middisttext.style.fontSize = 42;	
+    middisttext.text = "Acquiring GPS";
     frontdisttext.text = "";
     backdisttext.text = "";
 
@@ -159,6 +166,7 @@ clock.ontick = (evt) => {
           var hole = course.getHoleNum();
           if(initialized == true)
           {
+			middisttext.style.fontSize = 72;
             middisttext.text = course.distanceTo(hole, "center").toFixed(0);
             frontdisttext.text = course.distanceTo(hole, "front").toFixed(0);
             backdisttext.text = course.distanceTo(hole, "back").toFixed(0);
