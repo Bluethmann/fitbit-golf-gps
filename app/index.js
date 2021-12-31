@@ -7,6 +7,7 @@ import { me as appbit } from "appbit";
 
 import * as course from "../golf/courses.js";
 import * as gps from "../golf/gps.js";
+import * as bag from "../golf/bag-setup.js";
 
 let holetext = document.getElementById("holetext");
 let clubtext = document.getElementById("clubtext");
@@ -16,7 +17,6 @@ let backdisttext = document.getElementById("backdisttext");
 let courseanimationtext = document.getElementById("courseanimationtext");
 let timetext = document.getElementById("timetext");
 
-let hole_num = 0;   // zero based, hole 1 is hole_num=0, hole 18 is hole_num=17
 courseanimationtext.text = course.getCourseName();
 
 const holeUpBtn = document.getElementById("hole-up");
@@ -29,6 +29,9 @@ let initialized = false;
 
 appbit.appTimeoutEnabled = true;  // exit after a while if a round isn't started
 
+let last_lat = 0;
+let last_long = 0;
+let update_dist_display = false;
 
 function scrollTime()
 {
@@ -46,7 +49,6 @@ function scrollTime()
         courseanimationtext.animate("disable"); // Specify the name of the event to trigger
             
       }
-      //console.log("intialized = " + initialized);
   }, 6000);
   
   }
@@ -67,8 +69,10 @@ holeUpBtn.addEventListener("click", (evt) => {
   }
   else
   {
-    var hole = course.changeHole(1) + 1;
-    holetext.text = "Hole " + hole;      
+    holetext.text = "Hole " + (course.changeHole(1) + 1);      
+    last_lat = gps.getLatitude();
+    last_long = gps.getLongitude();
+    update_dist_display = false;
   }
 })
 
@@ -82,26 +86,35 @@ holeDnBtn.addEventListener("click", (evt) => {
   }
   else
   {
-    var hole = course.changeHole(-1) + 1;
-    holetext.text = "Hole " + hole;      
+    holetext.text = "Hole " + (course.changeHole(-1) + 1);      
+    last_lat = gps.getLatitude();
+    last_long = gps.getLongitude();
+    update_dist_display = false;
   }
 
 })
 
 
 clubUpBtn.addEventListener("click", (evt) => {
-  console.log("next club");
+
+  if(initialized == true)
+  {
+    clubtext.text = bag.changeClub(-1);
+  }
   
 })
 
 clubDnBtn.addEventListener("click", (evt) => {
-  console.log("prev club");
+  if(initialized == true)
+  {
+    clubtext.text = bag.changeClub(1);
+  }
+
 })
 
 
 checkBtn.addEventListener("click", (evt) => {
-  console.log("check");
-
+//  console.log("check");
   if(initialized == false)
   {
     initialized = true;
@@ -109,7 +122,7 @@ checkBtn.addEventListener("click", (evt) => {
     appbit.appTimeoutEnabled = false;  // don't exit after inactivity
 
     holetext.text = "Hole " + (course.getHoleNum() + 1);  // holes are zero based, add one for display
-    clubtext.text = "Driver";
+    clubtext.text = bag.getClub();
 	
 	// write acquiring GPS in small font, so it displays
     middisttext.style.fontSize = 42;	
@@ -123,7 +136,22 @@ checkBtn.addEventListener("click", (evt) => {
     clubUpBtn.x = 250;
     clubDnBtn.x = 15;
   }
-  
+  else  // check button calculates distance from last shot
+  {
+    if(gps.getLock() === true)
+    {
+      var dist = gps.getDistance(gps.getLatitude(), gps.getLongitude(), last_lat, last_long);
+      if(update_dist_display == true)  // first time, do nothing
+      {
+//        console.log(dist.toFixed(0));
+        clubtext.text = dist.toFixed(0) + " yds";
+        setTimeout(() => clubtext.text = bag.getClub(), 10000);
+      }
+      last_lat = gps.getLatitude();
+      last_long = gps.getLongitude();
+      update_dist_display = true;
+    }
+  }
 })
 
 //*************** Begin Clock display ********************
@@ -166,7 +194,7 @@ clock.ontick = (evt) => {
           var hole = course.getHoleNum();
           if(initialized == true)
           {
-			middisttext.style.fontSize = 72;
+            middisttext.style.fontSize = 72;
             middisttext.text = course.distanceTo(hole, "center").toFixed(0);
             frontdisttext.text = course.distanceTo(hole, "front").toFixed(0);
             backdisttext.text = course.distanceTo(hole, "back").toFixed(0);

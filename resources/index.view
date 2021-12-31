@@ -2,8 +2,8 @@
   <text id="clubtext" x="50%" y="88%"></text>
   <text id="holetext" x="50%" y="60%">Course</text>
   <text id="middisttext" x="50%" y="42%"></text>
-  <text id="frontdisttext" x="5%" y="40%"></text>
-  <text id="backdisttext" x="95%" y="40%"></text>
+  <text id="frontdisttext" x="14%" y="41%"></text>
+  <text id="backdisttext" x="86%" y="41%"></text>
   <text id="timetext" x="7%" y="20%"></text>
 
   <text id="courseanimationtext" x="50%" y="42%" pointer-events="visible">Test

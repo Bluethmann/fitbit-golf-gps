@@ -31,19 +31,19 @@
 
 #frontdisttext {
   fill: red;
-  font-size: 42;
+  font-size: 54;
   font-family: System-Regular;
   font-weight: bold;
-  text-anchor: start;
+  text-anchor: middle;
   text-length: 49;
 }
 
 #backdisttext {
   fill: red;
-  font-size: 42;
+  font-size: 54;
   font-family: System-Regular;
   font-weight: bold;
-  text-anchor: end;
+  text-anchor: middle;
   text-length: 49;
 }
 
@@ -105,5 +105,5 @@
 
 #check {
   x: 250;
-  y: 20;
+  y: 19;
 }
