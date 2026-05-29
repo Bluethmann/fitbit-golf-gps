@@ -194,11 +194,23 @@ export function distanceTo(hole, which)
     let lat2_r = lat_long_hole[0] * Math.PI / 180.0;
     let long2_r = lat_long_hole[1] * Math.PI / 180.0;
 
+    /* OLD WAY
     val = Math.acos(
     Math.sin(lat1_r) * Math.sin(lat2_r) + Math.cos(lat1_r) * Math.cos(lat2_r) * Math.cos(long1_r - long2_r)
     ) * earth_radius_yards;
+    */
+    // NEW WAY
+    // Guard against floating point errors
+    let cosTheta = Math.sin(lat1_r) * Math.sin(lat2_r) + 
+                   Math.cos(lat1_r) * Math.cos(lat2_r) * Math.cos(long1_r - long2_r);
     
+    // Clamp the value to the [-1, 1] range
+    cosTheta = Math.max(-1, Math.min(1, cosTheta));
+
+    val = Math.acos(cosTheta) * earth_radius_yards;
   }
+    
+  
 // ACOS ((sin(G2*PI()/180)*sin(I2*PI()/180)+cos(G2*PI()/180)*cos(I2*PI()/180)*cos(H2*PI()/180-J2*PI()/180)) ) *$O$23  
   return val;
 }

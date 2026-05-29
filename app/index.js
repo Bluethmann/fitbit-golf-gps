@@ -3,6 +3,7 @@
  */
 import * as document from "document";
 import clock from "clock";
+import { memory } from "system";
 
 import * as course from "../golf/courses.js";
 import * as gps from "../golf/gps.js";
@@ -151,25 +152,32 @@ function formatString(the_time)
 }
 
 clock.ontick = (evt) => {
-    if(ticks > ticks_per_update)
-    {
+    // 1. Always update the time (standard practice)
+    timetext.text = formatString(evt.date);
+
+    // 2. Only run the expensive GPS/Distance logic every X ticks
+    if (ticks > ticks_per_update) {
         ticks = 0;    
-        if(gps.getLock() == true)
-        {
-          var hole = course.getHoleNum();
-          if(initialized == true)
-          {
+        console.log("Used JS Memory: " + memory.js.used + " bytes");       
+        // Trigger a fresh GPS request
+        gps.refreshLocation(); 
+
+        // 3. Only update the UI text if we have a valid lock
+        if (gps.getLock() === true && initialized === true) {
+            var hole = course.getHoleNum();
+            
+            // Calculate distances
+            // Note: Ensure your course.distanceTo uses gps.getLatitude() internally
             middisttext.text = course.distanceTo(hole, "center").toFixed(0);
             frontdisttext.text = course.distanceTo(hole, "front").toFixed(0);
             backdisttext.text = course.distanceTo(hole, "back").toFixed(0);
-          }
+            
+            console.log("Distances updated for hole " + hole);
+        } else {
+            // Optional: Show "---" or "Searching" if no lock
+            middisttext.text = "---";
         }
-        timetext.text = formatString(evt.date);
-    }
-    else
-    {
+    } else {
         ticks++;
     }
-    
-}
-//*************** End Clock display ********************
+}//*************** End Clock display ********************
